@@ -63,7 +63,7 @@ resource "aws_route_table_association" "private" {
 
 resource "aws_subnet" "private_2" {
   vpc_id            = aws_vpc.main.id
-  cidr_block        = "10.0.3.0/24"
+  cidr_block        = var.second_private_subnet_cidr
   availability_zone = var.second_availability_zone
 
   tags = {

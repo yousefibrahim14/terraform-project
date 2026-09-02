@@ -54,3 +54,8 @@ variable "db_password" {
   type        = string
   sensitive   = true
 }
+
+variable "second_private_subnet_cidr" {
+  description = "CIDR block for second private subnet"
+  type        = string
+}
