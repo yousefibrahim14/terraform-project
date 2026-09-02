@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        RDS_PASSWORD = credentials('rds-password')
-    }
-
     parameters {
         choice(
             name: 'ENV',
@@ -15,16 +11,24 @@ pipeline {
 
     stages {
 
-        stage('Test Credentials') {
+        stage('Prepare Variables') {
             steps {
-                sh '''
-                    if [ -n "$RDS_PASSWORD" ]; then
-                        echo "RDS password is available"
-                    else
-                        echo "RDS password is NOT available"
-                        exit 1
-                    fi
-                '''
+                withCredentials([
+                    string(
+                        credentialsId: 'rds-password',
+                        variable: 'RDS_PASSWORD'
+                    )
+                ]) {
+                    sh '''
+                        cp "${ENV}.tfvars.example" terraform.tfvars
+
+                        printf '\\ndb_password = "%s"\\n' "$RDS_PASSWORD" >> terraform.tfvars
+
+                        chmod 600 terraform.tfvars
+
+                        echo "Terraform variables prepared for ${ENV}"
+                    '''
+                }
             }
         }
 
@@ -56,6 +60,12 @@ pipeline {
             }
         }
 
+        stage('Terraform Validate') {
+            steps {
+                sh 'terraform validate'
+            }
+        }
+
         stage('Terraform Plan') {
             steps {
                 withCredentials([
@@ -68,6 +78,12 @@ pipeline {
                     sh 'terraform plan -input=false'
                 }
             }
+        }
+    }
+
+    post {
+        always {
+            sh 'rm -f terraform.tfvars'
         }
     }
 }
