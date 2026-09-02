@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        RDS_PASSWORD = credentials('rds-password')
+    }
+
     parameters {
         choice(
             name: 'ENV',
@@ -10,6 +14,19 @@ pipeline {
     }
 
     stages {
+
+        stage('Test Credentials') {
+            steps {
+                sh '''
+                    if [ -n "$RDS_PASSWORD" ]; then
+                        echo "RDS password is available"
+                    else
+                        echo "RDS password is NOT available"
+                        exit 1
+                    fi
+                '''
+            }
+        }
 
         stage('Terraform Init') {
             steps {
@@ -48,21 +65,7 @@ pipeline {
                         passwordVariable: 'AWS_SECRET_ACCESS_KEY'
                     )
                 ]) {
-                    sh 'terraform plan -input=false -var-file="${ENV}.tfvars"'
-                }
-            }
-        }
-
-        stage('Terraform Apply') {
-            steps {
-                withCredentials([
-                    usernamePassword(
-                        credentialsId: 'aws',
-                        usernameVariable: 'AWS_ACCESS_KEY_ID',
-                        passwordVariable: 'AWS_SECRET_ACCESS_KEY'
-                    )
-                ]) {
-                    sh 'terraform apply -input=false -auto-approve -var-file="${ENV}.tfvars"'
+                    sh 'terraform plan -input=false'
                 }
             }
         }
