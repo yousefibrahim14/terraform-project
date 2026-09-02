@@ -79,6 +79,20 @@ pipeline {
                 }
             }
         }
+
+        stage('Terraform Apply') {
+            steps {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'aws',
+                        usernameVariable: 'AWS_ACCESS_KEY_ID',
+                        passwordVariable: 'AWS_SECRET_ACCESS_KEY'
+                    )
+                ]) {
+                    sh 'terraform apply -input=false -auto-approve'
+                }
+            }
+        }
     }
 
     post {
