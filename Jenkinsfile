@@ -93,6 +93,41 @@ pipeline {
                 }
             }
         }
+
+        stage('Deploy Node.js App') {
+            when {
+                expression {
+                    params.ENV == 'dev'
+                }
+            }
+
+            steps {
+                sshagent(['ec2-ssh-key']) {
+                    sh '''
+                        ssh \
+                          -o StrictHostKeyChecking=no \
+                          -o UserKnownHostsFile=/dev/null \
+                          -o "ProxyCommand=ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -W %h:%p ubuntu@44.199.246.55" \
+                          ubuntu@10.0.2.176 \
+                          "mkdir -p ~/node-app"
+
+                        scp \
+                          -o StrictHostKeyChecking=no \
+                          -o UserKnownHostsFile=/dev/null \
+                          -o "ProxyCommand=ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -W %h:%p ubuntu@44.199.246.55" \
+                          app.js \
+                          ubuntu@10.0.2.176:~/node-app/app.js
+
+                        ssh \
+                          -o StrictHostKeyChecking=no \
+                          -o UserKnownHostsFile=/dev/null \
+                          -o "ProxyCommand=ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -W %h:%p ubuntu@44.199.246.55" \
+                          ubuntu@10.0.2.176 \
+                          "cd ~/node-app && nohup node app.js > app.log 2>&1 &"
+                    '''
+                }
+            }
+        }
     }
 
     post {
