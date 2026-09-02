@@ -38,3 +38,19 @@ variable "key_name" {
   description = "EC2 SSH key pair name"
   type        = string
 }
+variable "second_availability_zone" {
+  description = "Second Availability Zone"
+  type        = string
+}
+
+variable "db_username" {
+  description = "RDS database username"
+  type        = string
+  sensitive   = true
+}
+
+variable "db_password" {
+  description = "RDS database password"
+  type        = string
+  sensitive   = true
+}
