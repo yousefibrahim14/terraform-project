@@ -162,7 +162,6 @@ Private Subnet
    |
    +------> ElastiCache Redis
 
-```
 
 ```
 
