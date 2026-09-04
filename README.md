@@ -319,31 +319,39 @@ When the Terraform state changes in the S3 bucket, an S3 event triggers the Lamb
 
 ## Project Structure
 
-```
-terraform-project/
-│
-├── architecture.png
-├── app.js
-├── backend.tf
-├── provider.tf
-├── variables.tf
-├── vpc.tf
-├── security.tf
-├── ec2.tf
-├── nat.tf
-├── rds.tf
-├── elasticache.tf
-├── outputs.tf
-│
-├── dev.tfvars.example
-├── prod.tfvars.example
-│
-├── Dockerfile
-├── Jenkinsfile
-├── .gitignore
-└── .terraform.lock.hcl
+The project is organized into Terraform configuration files, Jenkins CI/CD configuration, and application code.
 
+### Terraform Infrastructure
 
+- `provider.tf` - AWS provider and Terraform configuration
+- `variables.tf` - Input variables
+- `vpc.tf` - VPC, subnets, route tables, and Internet Gateway
+- `nat.tf` - NAT Gateway and Elastic IP
+- `security.tf` - EC2 security groups
+- `ec2.tf` - Bastion and Application EC2 instances
+- `rds.tf` - RDS PostgreSQL configuration
+- `elasticache.tf` - ElastiCache Redis configuration
+- `outputs.tf` - Terraform outputs
+- `backend.tf` - Remote Terraform state configuration
+
+### Environment Configuration
+
+- `dev.tfvars.example` - Dev environment variables
+- `prod.tfvars.example` - Prod environment variables
+
+Sensitive `.tfvars` files are excluded from Git.
+
+### CI/CD and Application
+
+- `Jenkinsfile` - Jenkins CI/CD pipeline
+- `Dockerfile` - Custom Jenkins image with Terraform and AWS CLI
+- `app.js` - Node.js application
+- `architecture.png` - AWS architecture diagram
+
+### Git Configuration
+
+- `.gitignore` - Files excluded from Git
+- `.terraform.lock.hcl` - Terraform provider dependency lock file
 
 ## Terraform Commands
 
