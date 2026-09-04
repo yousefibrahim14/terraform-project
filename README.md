@@ -146,7 +146,7 @@ ElastiCache Redis is accessible only from the Application Security Group on port
 The project uses a Bastion Host architecture.
 
 
-```text
+```
 Internet
    |
    v
@@ -214,7 +214,7 @@ Jenkins runs inside Docker using a custom image containing:
 
 The pipeline includes the following stages:
 
-```text
+```
 Prepare Variables
        |
        v
@@ -291,7 +291,7 @@ The project implements an automated notification system for Terraform state chan
 
 ### Flow
 
-```text
+```
 Terraform
    |
    v
@@ -320,7 +320,7 @@ When the Terraform state changes in the S3 bucket, an S3 event triggers the Lamb
 
 ## Project Structure
 
-```text
+```
 terraform-project/
 │
 ├── architecture.png
